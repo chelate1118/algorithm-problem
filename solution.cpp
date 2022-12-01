@@ -100,11 +100,19 @@ public:
     }
 
     Number operator-(Number num) {
-        Number neg_num(num.data);
+        Number ret(data);
 
-        for (int& i: neg_num.data) i *= -1;
+        int size = max(ret.data.size(), num.data.size());
 
-        return *this + neg_num;
+        ret.data.resize(size);
+        num.data.resize(size);
+
+        for (int i = 0; i < size; i++) {
+            ret.data[i] -= num.data[i];
+        }
+
+        ret.pick_up();
+        return ret;
     }
 
     bool operator<(Number num) {
@@ -122,13 +130,26 @@ public:
     }
 };
 
-int n;
-Number left_side(2), right_side(1);
+int p, n;
+Number left_side(0), right_side(0);
 vector<int> arr;
 
 int main()
 {
-    cin >> n;
+    cin >> p >> n;
+
+    if (p == 1 || p == 4 || p == 9) {
+        cout << 0;
+        return 0;
+    }
+
+    if (p < 4) {
+        left_side = Number(2);
+        right_side = Number(p-1);
+    } else if(p < 9) {
+        left_side = Number(4);
+        right_side = Number(p-4);
+    }
     
     int ans = 0;
     while (n--) {
